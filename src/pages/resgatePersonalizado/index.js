@@ -10,6 +10,19 @@ export const ResgatePersonalizado = ({route, navigation}) => {
   const {acoes} = route.params;
 
   const [valorResgatar, setValorResgatar] = useState(0);
+  const [error, setError] = useState(false);
+  const [valores, setValores] = useState({});
+
+  const atualizaValor = (valor, key) => {
+    let tempValores = {...valores};
+    tempValores[key] = parseInt(valor, 10);
+    let valorTotal = 0;
+    for (const [key, value] of Object.entries(tempValores)) {
+      valorTotal += value / 100;
+    }
+    setValores(tempValores);
+    setValorResgatar(valorTotal);
+  };
   const renderListHeader = () => {
     return (
       <>
@@ -23,12 +36,15 @@ export const ResgatePersonalizado = ({route, navigation}) => {
       </>
     );
   };
-  const renderItem = ({item}) => {
-    console.log('itemInvestimento', item);
+  const renderItem = ({item, index}) => {
+    console.log('itemInvestimento', item, index);
     return (
       <ResgateComponent
         item={item}
         saldoTotalDisponivel={saldoTotalDisponivel}
+        setErrorGlobal={setError}
+        atualizaValor={atualizaValor}
+        keyObj={index}
       />
     );
   };
@@ -43,7 +59,10 @@ export const ResgatePersonalizado = ({route, navigation}) => {
           textDireito={mascaraFinanceira(valorResgatar)}
         />
         <View style={styles.separator} />
-        <Pressable style={styles.button}>
+        <Pressable
+          style={[styles.button, error && {backgroundColor: 'gray'}]}
+          disabled={error}
+          onPress={() => console.log('aaaa')}>
           <Text style={styles.buttonText}>CONFIRMAR RESGATE</Text>
         </Pressable>
       </>
