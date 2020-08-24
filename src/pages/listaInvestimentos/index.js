@@ -10,13 +10,11 @@ const ListaInvestimentos = (props) => {
   const carregaDados = () => {
     carregarInvestimentos()
       .then((res) => {
-        console.log(res);
         res.data &&
           res.data.response &&
           setListaInvestimentos(res.data.response.data.listaInvestimentos);
       })
       .catch((err) => {
-        console.log('falha oa carregar dados, tentando novamente-->', err);
         Alert.alert(
           'Erro ao carregar investimentos',
           'Por favor tente novamente',
@@ -30,11 +28,21 @@ const ListaInvestimentos = (props) => {
     carregaDados();
   }, []);
 
-  const renderItem = ({item}) => {
-    console.log(item);
-    return <InvestimentoRow {...item} />;
+  const acessaInvestimento = (acoes, nome, saldoTotalDisponivel) => {
+    props.navigation.push('resgate', {
+      acoes,
+      nome,
+      saldoTotalDisponivel,
+    });
   };
-  const renderSeparator = () => <View style={styles.sepator} />;
+
+  const renderItem = ({item}) => {
+    return (
+      <InvestimentoRow {...item} acessaInvestimento={acessaInvestimento} />
+    );
+  };
+  const renderSeparator = () => <View style={styles.separator} />;
+
   return (
     <>
       <SafeAreaView style={styles.mainContainer}>
@@ -43,6 +51,7 @@ const ListaInvestimentos = (props) => {
           data={listaInvestimentos}
           renderItem={renderItem}
           ItemSeparatorComponent={renderSeparator}
+          keyExtractor={(item, index) => index + ''}
         />
       </SafeAreaView>
     </>
@@ -51,7 +60,7 @@ const ListaInvestimentos = (props) => {
 
 const styles = StyleSheet.create({
   mainContainer: {backgroundColor: 'rgb(241, 241, 241)', flex: 1},
-  sepator: {
+  separator: {
     backgroundColor: 'rgb(241, 241, 241)',
     height: 0.5,
   },

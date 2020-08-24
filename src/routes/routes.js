@@ -16,6 +16,7 @@ const opcoesNavegacao = {
     color: '#fff',
     alignSelf: 'center',
   },
+  headerLeft: null,
   headerStyle: {
     backgroundColor: '#0038A8',
     borderBottomColor: '#F9DD16',

@@ -1,24 +1,38 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {mascaraFinanceira} from '../services/tratarFinanceiro';
 
 export const InvestimentoRow = ({
+  acoes,
   indicadorCarencia,
   nome,
   objetivo,
   saldoTotalDisponivel,
+  acessaInvestimento,
 }) => {
-  // console.log('aaaa', indicadorCarencia, nome, objetivo, saldoTotalDisponivel);
+  const disabled = indicadorCarencia === 'S';
+  const disabledStyle = disabled
+    ? {
+        color: 'gray',
+        backgroundColor: 'rgb(250, 250, 250)',
+      }
+    : null;
   return (
-    <View style={styles.row}>
-      <View>
-        <Text style={styles.mainText}>{nome}</Text>
-        <Text style={styles.secondaryText}>{objetivo}</Text>
+    <Pressable
+      disabled={disabled}
+      onPress={() =>
+        !disabled && acessaInvestimento(acoes, nome, saldoTotalDisponivel)
+      }>
+      <View style={[styles.row, disabledStyle]}>
+        <View>
+          <Text style={[styles.mainText, disabledStyle]}>{nome}</Text>
+          <Text style={styles.secondaryText}>{objetivo}</Text>
+        </View>
+        <Text style={[styles.mainText, disabledStyle]}>
+          {mascaraFinanceira(saldoTotalDisponivel)}
+        </Text>
       </View>
-      <Text style={styles.mainText}>
-        {mascaraFinanceira(saldoTotalDisponivel)}
-      </Text>
-    </View>
+    </Pressable>
   );
 };
 
