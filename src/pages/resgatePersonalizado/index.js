@@ -3,6 +3,8 @@ import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
 import {Cabecalho} from '../../components/cabecalho';
 import {Descricao} from '../../components/descricao';
 import {mascaraFinanceira} from '../../services/tratarFinanceiro';
+import {Overlay} from 'react-native-elements';
+
 import {ResgateComponent} from '../../components/resgateComponent';
 export const ResgatePersonalizado = ({route, navigation}) => {
   const {nome} = route.params;
@@ -12,7 +14,11 @@ export const ResgatePersonalizado = ({route, navigation}) => {
   const [valorResgatar, setValorResgatar] = useState(0);
   const [error, setError] = useState(false);
   const [valores, setValores] = useState({});
+  const [visible, setVisible] = useState(false);
 
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
   const atualizaValor = (valor, key) => {
     let tempValores = {...valores};
     tempValores[key] = parseInt(valor, 10);
@@ -62,21 +68,41 @@ export const ResgatePersonalizado = ({route, navigation}) => {
         <Pressable
           style={[styles.button, error && {backgroundColor: 'gray'}]}
           disabled={error}
-          onPress={() => console.log('aaaa')}>
+          onPress={() => toggleOverlay()}>
           <Text style={styles.buttonText}>CONFIRMAR RESGATE</Text>
         </Pressable>
       </>
     );
   };
   return (
-    <FlatList
-      ListHeaderComponent={renderListHeader}
-      ListFooterComponent={renderFooter}
-      data={acoes}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => item.id}
-      ItemSeparatorComponent={renderSeparator}
-    />
+    <View>
+      <Overlay
+        isVisible={visible}
+        onBackdropPress={toggleOverlay}
+        overlayStyle={{
+          width: '80%',
+          height: '30%',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+        }}>
+        <Text style={styles.buttonText}>Resgate Efetuado!</Text>
+        <Text>O valor solicitado estará em sua conta em até 5 dias!</Text>
+        <Pressable
+          style={[styles.button, error && {backgroundColor: 'gray'}]}
+          disabled={error}
+          onPress={() => toggleOverlay()}>
+          <Text style={styles.buttonText}>NOVO RESGATE</Text>
+        </Pressable>
+      </Overlay>
+      <FlatList
+        ListHeaderComponent={renderListHeader}
+        ListFooterComponent={renderFooter}
+        data={acoes}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => item.id}
+        ItemSeparatorComponent={renderSeparator}
+      />
+    </View>
   );
 };
 
